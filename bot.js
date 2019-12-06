@@ -1,6 +1,7 @@
 var Discord = require('discord.io');
 var logger = require('winston');
 var auth = require('./auth.json');
+var request = require('request');
 // Configure logger settings
 logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
@@ -31,7 +32,28 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 					message: 'Hi ' + name + ', I\'m Dad!'
 				});
 			}
-					// Just add any case commands if you want to..
+					
 		}
 	}
+	if (message == '!dadjoke') {  
+		let options = {
+			headers: {
+				'User-Agent': 'DadBot'
+			},
+			json: true
+		};
+		request('https://icanhazdadjoke.com/', options, (err, res, body) => {
+			if (err) {
+			  bot.sendMessage({
+				to: channelID,
+				message: 'error'
+			});
+			}
+			else bot.sendMessage({
+				to: channelID,
+				message: body.joke
+			});
+		});
+	}
+	
 });
