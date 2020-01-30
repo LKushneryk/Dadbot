@@ -15,25 +15,31 @@ bot.on('ready', () => {
     logger.info(bot.username + ' - (' + bot.id + ')');
 });
 bot.on('message', message => {
-    // Our bot needs to know if it will execute a command
-    // It will listen for messages that will start with 'im' or variants
-    // logger.info(message); // for debug only
-	// logger.info(userID);
-	// logger.info(message.member.level);
 	user = message.author.username;
 	if (user != 'Dadbot' && user != 'Groovy') {
+		// Bot listens for messages that will start with 'im' or variants
+		// Regex description
+		/*
+			([Ii][’']?\s*[Mm]\s+)	// Looks for different variants of 'im'
+			(	
+				(	
+					\w				// Takes word characters
+					|\s				// Or spaces
+					|<:\w+:\d{18}>	// Or discord emojis
+					|(<@!\d{18}>) 	// Or discord pings
+					|(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])
+									// Or unicode emojis
+				)+					// Requires one or more of these characters
+			)
+		*/
 		var regex = /([Ii][’']?\s*[Mm]\s+)((\w|\s|<:\w+:\d{18}>|(<@!\d{18}>)|(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff]))+)/;
 		var match = regex.exec(message.content);
 		if (match) {
-			var name = match[2];
+			var name = match[2];	// Take first match after the found 'im'
 			name = name.trim();
 			if (name != undefined) {
 				message.channel.send('Hi ' + name + ', I\'m Dad!');
-			}/*
-			serverID = message.guild.id;
-			if (serverID != '442163319424548867') {
-				message.member.setNickname(name);
-			}*/
+			}
 		}
 	}
 	if (message.content == '!dadjoke') {  
